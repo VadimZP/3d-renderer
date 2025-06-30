@@ -27,6 +27,7 @@ vec3_t cube_rotation = { .x = 0, .y = 0, .z = 0 };
 
 float fov_factor = 640;
 
+
 vec2_t project(vec3_t point) {
     vec2_t projected_point = {
         .x = (fov_factor * point.x) / point.z,
@@ -133,6 +134,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
         return 1;
     }
 
+    //draw_line(10, 10, 16, 8);
+
+
     return SDL_APP_CONTINUE;
 }
 
@@ -163,7 +167,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
    for (int i = 0; i < N_MESH_FACES; i++) {
        triangle_t triangle = triangles_to_render[i];
 
-       for (int j = 0; j < 2; j++) {
+       for (int j = 0; j <= 2; j++) {
            draw_rect(
                triangle.points[j].x,
                triangle.points[j].y,
@@ -171,6 +175,22 @@ SDL_AppResult SDL_AppIterate(void* appstate)
                4,
                0xFFFFFF00
            );
+
+           if (j == 2) {
+               draw_line(
+                   triangle.points[j].x,
+                   triangle.points[j].y,
+                   triangle.points[0].x,
+                   triangle.points[0].y
+               );
+           } else {
+               draw_line(
+                   triangle.points[j].x,
+                   triangle.points[j].y,
+                   triangle.points[j + 1].x,
+                   triangle.points[j + 1].y
+               );
+           }
        }
     }
 
