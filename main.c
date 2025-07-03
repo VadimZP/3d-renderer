@@ -175,23 +175,17 @@ SDL_AppResult SDL_AppIterate(void* appstate)
                4,
                0xFFFFFF00
            );
-
-           if (j == 2) {
-               draw_line(
-                   triangle.points[j].x,
-                   triangle.points[j].y,
-                   triangle.points[0].x,
-                   triangle.points[0].y
-               );
-           } else {
-               draw_line(
-                   triangle.points[j].x,
-                   triangle.points[j].y,
-                   triangle.points[j + 1].x,
-                   triangle.points[j + 1].y
-               );
-           }
        }
+
+       draw_triangle(
+           triangle.points[0].x,
+           triangle.points[0].y,
+           triangle.points[1].x,
+           triangle.points[1].y,
+           triangle.points[2].x,
+           triangle.points[2].y,
+           0xFFFFFF00
+       );
     }
 
 
