@@ -1,5 +1,9 @@
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "mesh.h"
 #include "array.h"
@@ -55,5 +59,39 @@ void load_cube_mesh_data(void) {
 }
 
 void load_obj_file_data(char* filename) {
+    FILE* fptr;
+    fptr = fopen(filename, "r");
 
+    if (fptr == NULL) {
+        printf("Not able to open the file");
+        return;
+    }
+    
+    char myString[50];
+    char trimmedString[50];
+
+    char* x = NULL;
+    char* y = NULL;
+    char* z = NULL;
+
+
+    while (fgets(myString, 50, fptr)) {
+        if (myString[0] == 'v' && myString[1] == ' ') {
+            int j = 2;
+            for (int i = 0; i < 50; i++) {
+                trimmedString[i] = myString[j];
+                j++;
+            }
+
+            char* myPtr = strtok(trimmedString, " ");
+            while (myPtr != NULL) {
+                float number = atof(myPtr);
+                printf("float: %lf\n", number);
+                myPtr = strtok(NULL, " ");
+            }
+            printf("FULL STRING: %s \n", myString);
+        }
+    }
+
+    fclose(fptr);
 }
