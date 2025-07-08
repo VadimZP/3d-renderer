@@ -93,9 +93,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
         return SDL_APP_FAILURE;
     }
 
-    load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\cube.obj");
+    //load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\cube.obj");
 
-    return SDL_APP_FAILURE;
+    //return SDL_APP_FAILURE;
 
     SDL_DisplayID display_id = SDL_GetPrimaryDisplay();
     const SDL_DisplayMode* display_mode = SDL_GetCurrentDisplayMode(display_id);
@@ -141,7 +141,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     }
 
     //load_cube_mesh_data();
-    //load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\cube.obj");
+    load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\f22.obj");
 
     return SDL_APP_CONTINUE;
 }

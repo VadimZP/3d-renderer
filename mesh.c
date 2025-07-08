@@ -70,10 +70,8 @@ void load_obj_file_data(char* filename) {
     char myString[50];
     char trimmedString[50];
 
-    char* x = NULL;
-    char* y = NULL;
-    char* z = NULL;
-
+    vec3_t* vertices = NULL;
+    face_t* faces = NULL;
 
     while (fgets(myString, 50, fptr)) {
         if (myString[0] == 'v' && myString[1] == ' ') {
@@ -83,15 +81,66 @@ void load_obj_file_data(char* filename) {
                 j++;
             }
 
+            vec3_t vertex = { 0, 0, 0 };
             char* myPtr = strtok(trimmedString, " ");
+            int k = 0;
             while (myPtr != NULL) {
                 float number = atof(myPtr);
-                printf("float: %lf\n", number);
+                if (k == 0) {
+                    vertex.x = number;
+                }
+                if (k == 1) {
+                    vertex.y = number;
+                }
+                if (k == 2) {
+                    vertex.z = number;
+                }
                 myPtr = strtok(NULL, " ");
+                k++;
             }
-            printf("FULL STRING: %s \n", myString);
+            array_push(vertices, vertex);
+            k = 0;
+        }
+
+        if (myString[0] == 'f' && myString[1] == ' ') {
+            int j = 2;
+            for (int i = 0; i < 50; i++) {
+                trimmedString[i] = myString[j];
+                j++;
+            }
+
+            printf("%s\n", trimmedString);
+
+            face_t face = { 0, 0, 0 };
+            char* myPtr = strtok(trimmedString, "/ ");
+            int k = 1;
+            while (myPtr != NULL) {
+                int number = atoi(myPtr);
+
+                if (k == 1) {
+                    printf("%s is under %d\n", myPtr, k);
+                    face.a = number;
+                }
+                if (k == 4) {
+                    printf("%s is under %d\n", myPtr, k);
+                    face.b = number;
+                }
+                if (k == 7) {
+                    printf("%s is under %d\n", myPtr, k);
+                    face.c = number;
+                }
+                myPtr = strtok(NULL, "/ ");
+                k++;
+
+            }
+            printf("%d\n", face.a);
+            array_push(faces, face);
+            k = 0;
         }
     }
+
+    mesh.vertices = vertices;
+    mesh.faces = faces;
 
     fclose(fptr);
 }
