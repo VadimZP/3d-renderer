@@ -140,9 +140,11 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
         return 1;
     }
 
-    //load_cube_mesh_data();
     load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\f22.obj");
 
+    vec3_t a = { 2.5, 6.4, 3.0 };
+
+    float a_length = vec3_length(a);
     return SDL_APP_CONTINUE;
 }
 
