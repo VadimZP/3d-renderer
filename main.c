@@ -23,7 +23,7 @@ SDL_Texture* color_buffer_texture = NULL;
 
 triangle_t* triangles_to_render = NULL;
 
-vec3_t camera_position = { .x = 0, .y = 0, .z = -5 };
+vec3_t camera_position = { 0, 0, 0 };
 
 float fov_factor = 640;
 
@@ -62,6 +62,8 @@ void update(void) {
 
         triangle_t projected_triangle;
 
+        vec3_t transformed_vertices[3];
+
         for (int j = 0; j < 3; j++) {
             vec3_t transformed_vertex = face_vertices[j];
 
@@ -69,18 +71,39 @@ void update(void) {
             transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
             transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
 
-            transformed_vertex.z -= camera_position.z;
+            transformed_vertex.z += 5;
 
-            vec2_t projected_point = project(transformed_vertex);
-
-            projected_point.x += (window_width / 2);
-            projected_point.y += (window_height / 2);
-
-            projected_triangle.points[j] = projected_point;
+            transformed_vertices[j] = transformed_vertex;
         }
 
-        //triangles_to_render[i] = projected_triangle;
-        array_push(triangles_to_render, projected_triangle);
+        vec3_t vector_a = transformed_vertices[0]; /*    A              */
+        vec3_t vector_b = transformed_vertices[1]; /*   / \             */
+        vec3_t vector_c = transformed_vertices[2]; /*  C---B (clokwise) */
+
+        // B - A
+        vec3_t vector_ab = vec3_sub(vector_b, vector_a);
+        // C - A
+        vec3_t vector_ac = vec3_sub(vector_c, vector_a);
+
+        // Compute the face normal (using cross product to find perpendicular)
+        vec3_t normal = vec3_cross(vector_ab, vector_ac);
+        vec3_t camera_ray = vec3_sub(camera_position, vector_a);
+
+        float dot_normal_camera = vec3_dot(camera_ray, normal);
+
+        if (dot_normal_camera > 0) {
+            for (int j = 0; j < 3; j++)
+            {
+                vec2_t projected_point = project(transformed_vertices[j]);
+
+                projected_point.x += (window_width / 2);
+                projected_point.y += (window_height / 2);
+
+                projected_triangle.points[j] = projected_point;
+            }
+
+            array_push(triangles_to_render, projected_triangle);
+        }
     }
 }
 
@@ -92,10 +115,6 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
         SDL_Log("SDL_Init failed: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
-
-    //load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\cube.obj");
-
-    //return SDL_APP_FAILURE;
 
     SDL_DisplayID display_id = SDL_GetPrimaryDisplay();
     const SDL_DisplayMode* display_mode = SDL_GetCurrentDisplayMode(display_id);
@@ -140,7 +159,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
         return 1;
     }
 
-    load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\f22.obj");
+    load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\cube.obj");
 
     vec3_t a = { 2.5, 6.4, 3.0 };
 
