@@ -25,6 +25,13 @@ float vec2_dot(vec2_t a, vec2_t b) {
 	return a.x * b.x + a.y * b.y;
 }
 
+void vec2_normalize(vec2_t* v) {
+	float l = vec2_length(*v);
+	v->x /= l;
+	v->y /= l;
+}
+
+
 float vec3_length(vec3_t v) {
 	return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 }
@@ -56,6 +63,14 @@ vec3_t vec3_cross(vec3_t a, vec3_t b) {
 	};
 	return result;
 }
+
+void vec3_normalize(vec3_t* v) {
+	float l = vec3_length(*v);
+	v->x /= l;
+	v->y /= l;
+	v->z /= l;
+}
+
 
 vec3_t vec3_rotate_x(vec3_t v, float angle) {
 	if (!angle) {
