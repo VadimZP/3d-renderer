@@ -77,7 +77,6 @@ void load_obj_file_data(char* filename) {
         }
 
         if (strncmp(line, "f ", 2) == 0) {
-            printf("Line: %s \n",line);
             int vertex_indices[3];
             int texture_indices[3];
             int normal_indices[3];
@@ -98,75 +97,6 @@ void load_obj_file_data(char* filename) {
             array_push(mesh.faces, face);
         }
     }
-
-
- /*   char trimmedString[50];
-
-    vec3_t* vertices = NULL;
-    face_t* faces = NULL;
-
-    while (fgets(myString, 50, fptr)) {
-        if (myString[0] == 'v' && myString[1] == ' ') {
-            int j = 2;
-            for (int i = 0; i < 50; i++) {
-                trimmedString[i] = myString[j];
-                j++;
-            }
-
-            vec3_t vertex = { 0, 0, 0 };
-            char* myPtr = strtok(trimmedString, " ");
-            int k = 0;
-            while (myPtr != NULL) {
-                float number = atof(myPtr);
-                if (k == 0) {
-                    vertex.x = number;
-                }
-                if (k == 1) {
-                    vertex.y = number;
-                }
-                if (k == 2) {
-                    vertex.z = number;
-                }
-                myPtr = strtok(NULL, " ");
-                k++;
-            }
-            array_push(vertices, vertex);
-            k = 0;
-        }
-
-        if (myString[0] == 'f' && myString[1] == ' ') {
-            int j = 2;
-            for (int i = 0; i < 50; i++) {
-                trimmedString[i] = myString[j];
-                j++;
-            }
-
-
-            face_t face = { 0, 0, 0 };
-            char* myPtr = strtok(trimmedString, "/ ");
-            int k = 1;
-            while (myPtr != NULL) {
-                int number = atoi(myPtr);
-
-                if (k == 1) {
-                    face.a = number;
-                }
-                if (k == 4) {
-                    face.b = number;
-                }
-                if (k == 7) {
-                    face.c = number;
-                }
-                myPtr = strtok(NULL, "/ ");
-                k++;
-            }
-            array_push(faces, face);
-            k = 0;
-        }
-    }
-
-    mesh.vertices = vertices;
-    mesh.faces = faces;*/
 
     fclose(file);
 }

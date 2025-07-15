@@ -130,7 +130,6 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 
     window_width = display_mode->w;
     window_height = display_mode->h;
-    SDL_Log("size: %d, %d", window_width, window_height);
 
     if (!SDL_CreateWindowAndRenderer(
         "SDL Window", 
@@ -192,7 +191,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     SDL_RenderClear(renderer);
 
     draw_grid();
-    update();
+ /*   update();
 
     int num_triangles = array_length(triangles_to_render);
 
@@ -218,7 +217,9 @@ SDL_AppResult SDL_AppIterate(void* appstate)
            triangle.points[2].y,
            0xFFFFFF00
        );
-    }
+    }*/
+
+    draw_filled_triangle(300, 100, 50, 400, 500, 700, 0xFF00FF00);
 
     // Clear the array of triangles to render every frame loop
     array_free(triangles_to_render);
