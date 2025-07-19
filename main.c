@@ -11,6 +11,30 @@
 #include "mesh.h"
 #include "array.h"
 
+void swap(triangle_t* a, triangle_t* b) {
+    triangle_t temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+
+void bubbleSort(triangle_t arr[], int n) {
+    int i, j;
+    bool swapped;
+    for (i = 0; i < n - 1; i++) {
+        swapped = false;
+        for (j = n - 1; j > 0 + i; j--) {
+            if (arr[j].avg_depth > arr[j - 1].avg_depth) {
+                swap(&arr[j], &arr[j - 1]);
+                swapped = true;
+            }
+        }
+
+        if (swapped == false)
+            break;
+    }
+}
+
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -60,16 +84,17 @@ void update(void) {
         face_vertices[1] = mesh.vertices[mesh_face.b - 1];
         face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
-        triangle_t projected_triangle;
 
         vec3_t transformed_vertices[3];
 
         for (int j = 0; j < 3; j++) {
             vec3_t transformed_vertex = face_vertices[j];
 
-            transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
+
+
+     /*       transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
             transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
-            transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
+            transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);*/
 
             transformed_vertex.z += 5;
 
@@ -95,20 +120,38 @@ void update(void) {
 
         float dot_normal_camera = vec3_dot(camera_ray, normal);
 
+        vec2_t projected_points[3];
+
         if (dot_normal_camera > 0) {
             for (int j = 0; j < 3; j++)
             {
-                vec2_t projected_point = project(transformed_vertices[j]);
+                projected_points[j] = project(transformed_vertices[j]);
 
-                projected_point.x += (window_width / 2);
-                projected_point.y += (window_height / 2);
-
-                projected_triangle.points[j] = projected_point;
+                projected_points[j].x += (window_width / 2);
+                projected_points[j].y += (window_height / 2);
             }
+
+            triangle_t projected_triangle = {
+                .points = {
+                    { projected_points[0].x ,  projected_points[0].y},
+                    { projected_points[1].x ,  projected_points[1].y},
+                    { projected_points[2].x ,  projected_points[2].y }
+                },
+                .color = mesh_face.color,
+                .avg_depth = (transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3.0
+            };
+
 
             array_push(triangles_to_render, projected_triangle);
         }
+        bubbleSort(triangles_to_render, array_length(triangles_to_render));
     }
+
+
+    //for (int i = 0; i < array_length(triangles_to_render); i++) {
+    //    printf("z: %f \n", triangles_to_render[i].avg_depth);
+    //}
+    //printf("================= \n");
 }
 
 
@@ -162,7 +205,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
         return 1;
     }
 
-    load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\cube.obj");
+    load_cube_mesh_data();
+    //load_obj_file_data("C:\\CBProjects\\3drenderer\\assets\\cube.obj");
 
     vec3_t a = { 2.5, 6.4, 3.0 };
 
@@ -191,35 +235,23 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     SDL_RenderClear(renderer);
 
     draw_grid();
- /*   update();
+    update();
 
     int num_triangles = array_length(triangles_to_render);
 
-   for (int i = 0; i < num_triangles; i++) {
+    for (int i = 0; i < num_triangles; i++) {
        triangle_t triangle = triangles_to_render[i];
 
-       for (int j = 0; j <= 2; j++) {
-           draw_rect(
-               triangle.points[j].x,
-               triangle.points[j].y,
-               4,
-               4,
-               0xFFFFFF00
-           );
-       }
-
-       draw_triangle(
+       draw_filled_triangle(
            triangle.points[0].x,
            triangle.points[0].y,
            triangle.points[1].x,
            triangle.points[1].y,
            triangle.points[2].x,
            triangle.points[2].y,
-           0xFFFFFF00
+           triangle.color
        );
-    }*/
-
-    draw_filled_triangle(300, 100, 50, 400, 500, 700, 0xFF00FF00);
+    }
 
     // Clear the array of triangles to render every frame loop
     array_free(triangles_to_render);
